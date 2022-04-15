@@ -1,6 +1,5 @@
 # distributedSystem
 
-[toc]
 
 ## 业务模型
 
