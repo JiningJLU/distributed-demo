@@ -15,6 +15,8 @@ import com.sample.mall.goods.service.IGoodsService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
@@ -34,6 +36,9 @@ public class GoodsServiceImpl implements IGoodsService {
     @Resource
     GoodsMapper goodsMapper;
 
+    @Resource
+    RedisTemplate<String, GoodsDO> redisTemplate;
+
     @Override
     public boolean addGoods(GoodsDTO goodsDTO) {
         GoodsDO goodsDO = ObjectTransformer.transform(goodsDTO, GoodsDO.class);
@@ -42,6 +47,7 @@ public class GoodsServiceImpl implements IGoodsService {
     }
 
     @Override
+    @Cacheable(cacheNames = Constants.GOODS_CACHE_KEY, key = "#id")
     public GoodsDTO getGoods(Long id) {
         GoodsDO goodsDO = null;
         try (Jedis jedis = new Jedis("localhost", 6379);) {

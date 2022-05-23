@@ -5,6 +5,9 @@ spring:
     url: jdbc:mysql://120.77.173.199:3307/mall-goods?useInformationSchema=false&charset=utf8mb4&useSSL=false&allowMultiQueries=true
     username: root
     password: 123456
+  redis:
+    host: 127.0.0.1
+    port: 6379
 
 mybatis:
   mapper-locations: classpath:mapping/*Mapper.xml

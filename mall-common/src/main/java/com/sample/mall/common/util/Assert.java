@@ -67,4 +67,10 @@ public class Assert<T> {
             throw new BusinessException(response.getCode(), response.getMessage());
         }
     }
+
+    public static boolean assertEquals(Object a, Object b) {
+        if (a == null && b == null) return true;
+        if (a == null || b == null) return false;
+        return a.equals(b);
+    }
 }
