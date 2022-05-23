@@ -161,3 +161,6 @@ INSERT INTO `t_order_item` (`order_no`, `goods_id`, `number`, `amount`) VALUES (
 INSERT INTO `t_order_item` (`order_no`, `goods_id`, `number`, `amount`) VALUES (5, 1, 1, 848.00);
 INSERT INTO `t_order_item` (`order_no`, `goods_id`, `number`, `amount`) VALUES (6, 1, 1, 848.00);
 ```
+
+# 索引
+切面、注解、jedis -> mall

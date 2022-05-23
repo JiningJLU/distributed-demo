@@ -9,13 +9,13 @@ import com.sample.mall.common.exception.BusinessException;
 import com.sample.mall.common.util.Assert;
 import com.sample.mall.common.util.JSONUtil;
 import com.sample.mall.common.util.ObjectTransformer;
+import com.sample.mall.goods.aspect.MyCacheable;
 import com.sample.mall.goods.mapper.GoodsMapper;
 import com.sample.mall.goods.model.GoodsDO;
 import com.sample.mall.goods.service.IGoodsService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
@@ -47,12 +47,12 @@ public class GoodsServiceImpl implements IGoodsService {
     }
 
     @Override
-    @Cacheable(cacheNames = Constants.GOODS_CACHE_KEY, key = "#id")
+    @MyCacheable(cacheName = Constants.GOODS_CACHE_KEY_PREFIX, key = "#id")
     public GoodsDTO getGoods(Long id) {
         GoodsDO goodsDO = null;
         try (Jedis jedis = new Jedis("localhost", 6379);) {
 
-            String cacheKey = String.format(Constants.GOODS_CACHE_KEY, id);
+            String cacheKey = String.format(Constants.GOODS_CACHE_KEY_PREFIX, id);
             String cacheValue = jedis.get(cacheKey);
             logger.info("key:{}, value:{}", cacheKey, cacheValue);
 
@@ -74,7 +74,7 @@ public class GoodsServiceImpl implements IGoodsService {
         GoodsDO goodsDO = null;
         try (Jedis jedis = new Jedis("localhost", 6379);) {
 
-            String cacheKey = String.format(Constants.GOODS_CACHE_KEY, id);
+            String cacheKey = String.format(Constants.GOODS_CACHE_KEY_PREFIX, id);
             Map<String, String> cacheValue = jedis.hgetAll(cacheKey);
             logger.info("key:{}, value:{}", cacheKey, cacheValue);
 
