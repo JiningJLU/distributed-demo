@@ -2,6 +2,8 @@ package com.sample.mall.goods.aspect;
 
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.RateLimiter;
+import com.sample.mall.common.base.ResponseEnum;
+import com.sample.mall.common.exception.BusinessException;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -22,6 +24,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 
 @Component
@@ -32,6 +35,10 @@ public class MyCacheableAspect {
 
     @Resource
     private RedisTemplate redisTemplate;
+
+    public void setMap(Map<String, Double> map) {
+        this.map = map;
+    }
 
     // key: 方法名, value: 限流速率
     private Map<String, Double> map;
@@ -60,7 +67,7 @@ public class MyCacheableAspect {
             return o;
         }
         //  限流db
-
+        rateLimit(joinPoint, myCacheable);
         //  原有方法的运行
         Object result = joinPoint.proceed();
 
@@ -70,6 +77,23 @@ public class MyCacheableAspect {
             redisTemplate.opsForValue().set(cacheKey, result, myCacheable.expireInSeconds());
         }
         return result;
+    }
+
+    private void rateLimit(ProceedingJoinPoint joinPoint, MyCacheable myCacheable) {
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        String methodName = methodSignature.getName();
+        RateLimiter rateLimiter = rateLimiterMap.get(methodName);
+        if (rateLimiter != null) {
+            int waitInSeconds = myCacheable.waitInSeconds();
+            if (waitInSeconds <= 0) {
+                rateLimiter.acquire();
+            } else {
+                boolean tryAcquired = rateLimiter.tryAcquire(waitInSeconds, TimeUnit.SECONDS);
+                if (!tryAcquired) {
+                    throw new BusinessException(ResponseEnum.SYSTEM_BUSY);
+                }
+            }
+        }
     }
 
     private String getCacheKey(ProceedingJoinPoint joinPoint, MyCacheable myCacheable) {

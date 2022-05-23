@@ -29,7 +29,10 @@ public enum ResponseEnum {
     /** 程序异常 **/
     FEIGN_CALL_EXCEPTION("9997","远程调用失败"),
     TRANSFORM_EXCEPTION("9998", "对象转换异常"),
-    ERROR("9999", "系统异常");
+    ERROR("9999", "系统异常"),
+
+    /** 系统繁忙 **/
+    SYSTEM_BUSY("8888", "系统繁忙");
 
     ResponseEnum(String code, String message) {
         this.code = code;

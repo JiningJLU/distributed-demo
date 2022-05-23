@@ -18,4 +18,6 @@ public @interface MyCacheable {
     String key();
 
     int expireInSeconds() default 0;
+
+    int waitInSeconds() default 0;
 }
