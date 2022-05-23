@@ -19,3 +19,8 @@ feign:
       default:
         connect-timeout: 5000
         read-timeout: 5000
+
+mycacheable:
+    rate:
+      limit:
+        map: {getGoods: 10, goodsList: 20}
