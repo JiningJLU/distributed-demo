@@ -16,7 +16,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="mall" options="" />
+      <module name="mall" options="-parameters" />
       <module name="mall-common" options="-parameters" />
       <module name="mall-coupon" options="-parameters" />
       <module name="mall-goods" options="-parameters" />
