@@ -163,4 +163,4 @@ INSERT INTO `t_order_item` (`order_no`, `goods_id`, `number`, `amount`) VALUES (
 ```
 
 # 索引
-切面、注解、jedis -> mall
+切面、注解、jedis、RedisTemplate、限流 -> mall
